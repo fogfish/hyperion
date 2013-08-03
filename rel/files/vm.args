@@ -21,3 +21,6 @@
 
 ## Tweak GC to run more often
 ##-env ERL_FULLSWEEP_AFTER 10
+
+## forces to add all libraries to code path
+-pa */ebin

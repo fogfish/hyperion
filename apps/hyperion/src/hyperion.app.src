@@ -1,0 +1,18 @@
+{application, hyperion,
+   [
+      {description, "Erlang node builder"},
+      {vsn,         "0.0.0"},
+      {modules,     [
+         hyperion,
+         hyperion_sup,
+         hyperion_app
+      ]},
+      {registered,  []},
+      {applications,[
+         kernel
+        ,stdlib
+      ]},
+      {mod, {hyperion_app, []}},
+      {env, []}
+   ]
+}.  

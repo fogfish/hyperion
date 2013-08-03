@@ -8,21 +8,37 @@
 
 post_generate(_, undefined) ->
    ok;
-post_generate(Config, _) ->
-	Node = filename:basename(
+post_generate(Config, File) ->
+	case filename:basename(File) of
+		"reltool.config" ->
+			reltool(Config, File);
+		_ ->
+			ok
+	end.
+
+%%
+%% handle release
+reltool(Config, File) ->
+	Release = filename:basename(
 		filename:dirname(
 			rebar_utils:get_cwd()
 		)
 	),
-	ok = copy_lib(Node, erl_interface),
-	ok = copy_lib(Node, jinterface).
 
-copy_lib(Node, Name) ->
-	case code:lib_dir(Name) of
+	{ok, RelCfg} = file:consult(File),
+	lists:foreach(
+		fun(X) -> ok = copy_lib(Release, X) end,
+		proplists:get_value(lib, RelCfg, [])
+	).
+
+%%
+copy_lib(Rel, Lib) ->
+	case code:lib_dir(Lib) of
 		{error, bad_name} ->
 			ok;
 		Src ->
-			Dst = filename:join([rebar_utils:get_cwd(), Node, "lib", filename:basename(Src)]),
+			io:format("==> rel copy: ~p~n", [Lib]),
+			Dst = filename:join([rebar_utils:get_cwd(), Rel, "lib", filename:basename(Src)]),
 			os:cmd(lists:flatten(io_lib:format("cp -R ~s ~s", [Src, Dst]))),
 			ok
 	end.

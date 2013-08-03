@@ -1,32 +1,49 @@
-# Erlang Vanilla Node
+# Erlang Node Builder
 
-The project defines a vanilla configuration for Erlang OTP node, allowing 
-to build a distributable release package (tarball) containing chosen OTP release.
+The project defines builder script(s) to assemble Erlang/OTP node.
+
+## Objectives
+
+* assemble self-contained tarball package, installable to remote nodes
+* enable environment with minimal memory footprint while providing all standard Erlang/OTP libraries. 
+* ensure node customization
 
 ## Customize
 
-* Use `rebar.config` and `deps.config` to include external application to node
-* Use reltool.config to configure the release (node content)
-* Use vars.config to overlay node configuration
-* Use sys.config to manage default application properties
+* add 3rd-party Erlang libraries via `rebar.config` and `deps.config`
+* manage node content and boot sequence via `reltool.config` 
+* overlay default configuration with `vars.config`
+* define application envrionment and system variables at `sys.config`
 
 ## Build
+
+### Build standard node configuration
+
+produces `hyperion-${VSN}.${ARCH}-${PLAT}.tgz`
 
 ```
 	make
 	make rel
 ``` 
 
+### Overlay node specific configuration
+
+produces `mynode-${VSN}.${ARCH}-${PLAT}.tgz`
+
+```
+   make
+   make node id=mynode.config
+```
+
 ## Deploy
 
-TODO: deployment script
 ```
-	scp hyperion-$ARCH.tgz myuser@mynode:
+	scp hyperion-${VSN}.${ARCH}-${PLAT}.tgz myuser@mynode:
 	ssh myuser@mynode
 
 	cd /usr/local
-	tar -xvf hyperion-$ARCH.tgz
-	/usr/local/hyperion/bin/hyperion {start|stop}
+	sudo tar -xvf hyperion-${VSN}.${ARCH}-${PLAT}.tgz
+	/usr/local/hyperion/bin/hyperion {start|stop|attach}
 ```
 
 
