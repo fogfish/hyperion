@@ -24,20 +24,25 @@ reltool(Config, File) ->
 			rebar_utils:get_cwd()
 		)
 	),
-
-	{ok, RelCfg} = file:consult(File),
+   {ok, RelCfg} = file:consult(File),
+   RootDir      = rebar_rel_utils:get_root_dir(RelCfg),
 	lists:foreach(
-		fun(X) -> ok = copy_lib(Release, X) end,
+		fun(X) -> ok = copy_lib(Release, RootDir, X) end,
 		proplists:get_value(lib, RelCfg, [])
 	).
 
 %%
-copy_lib(Rel, Lib) ->
-	case code:lib_dir(Lib) of
-		{error, bad_name} ->
+copy_lib(Rel, RootDir, Lib) ->
+   Libs = lists:reverse(
+      filelib:wildcard(
+         filename:join([RootDir, "lib", atom_to_list(Lib) ++ "-*"])
+      )
+   ),
+	case Libs of
+		[] ->
 			ok;
-		Src ->
-			io:format("==> rel copy: ~p~n", [Lib]),
+		[Src|_] ->
+			io:format("==> rel copy: ~p~n", [Src]),
 			Dst = filename:join([rebar_utils:get_cwd(), Rel, "lib", filename:basename(Src)]),
 			os:cmd(lists:flatten(io_lib:format("cp -R ~s ~s", [Src, Dst]))),
 			ok

@@ -5,6 +5,7 @@
 *.dump
 *.tag.gz
 *.tgz
+*.bundle
 deps.config
 ebin/
 deps/
