@@ -1,5 +1,9 @@
 ##
 ## node deployment script
+##  ${PREFIX} - root installation folder
+##  ${REL}    - absolute path to release
+##  ${APP}    - application name
+##  ${VSN}    - application version
 set -u
 set -e
 
@@ -9,13 +13,6 @@ HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
 #HOST=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 NODE=`sed -n -e "s/-name \(.*\)@.*/\1/p" ${FILE}`
 sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
-
-##
-## symbol link
-if [ -h ${PREFIX}/${APP} ] ; then
-   rm -f ${PREFIX}/${APP}
-fi
-ln -s ${REL} ${PREFIX}/${APP}
 
 ##
 ## build service wrapper

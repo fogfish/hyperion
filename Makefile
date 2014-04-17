@@ -44,6 +44,9 @@ ifeq ($(wildcard rel/reltool.config),)
 else
 	REL  = $(shell cat rel/reltool.config | sed -n 's/{target_dir,.*\"\(.*\)\"}./\1/p')
 	VSN  = $(shell echo ${REL} | sed -n 's/.*-\(.*\)/\1/p')
+ifeq (${VSN},)
+	VSN  = $(shell cat rel/reltool.config | sed -n 's/.*{rel,.*\".*\",.*\"\(.*\)\".*/\1/p')
+endif
 ifeq (${config},)
 	RFLAGS  =	
 	VARIANT =
