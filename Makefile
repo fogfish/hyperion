@@ -99,9 +99,9 @@ rel:
 	@./rebar generate ${RFLAGS}; \
 	cd rel ; tar -zcf ../${TAR} ${REL}${VARIANT}/; cd -
 
-pkg: rel/files/deploy.sh rel
+pkg: rel/deploy.sh rel
 	@printf "${BUNDLE_INIT}"  > ${PKG} ; \
-	cat  rel/files/deploy.sh       >> ${PKG} ; \
+	cat  rel/deploy.sh       >> ${PKG} ; \
 	printf  "${BUNDLE_FREE}" >> ${PKG} ; \
 	cat  ${TAR}              >> ${PKG} ; \
 	chmod ugo+x  ${PKG}
@@ -161,6 +161,5 @@ endif
 ## dependencies
 ##
 rebar:
-	@curl -O https://raw.github.com/wiki/basho/rebar/rebar ; \
+	@curl -L -O https://raw.githubusercontent.com/wiki/basho/rebar/rebar ; \
 	chmod ugo+x rebar
-
