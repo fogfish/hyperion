@@ -9,10 +9,10 @@ set -e
 
 ## changes node name
 FILE=${REL}/releases/${VSN}/vm.args
-HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
+#HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
 #HOST=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
-NODE=`sed -n -e "s/-name \(.*\)@.*/\1/p" ${FILE}`
-sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
+#NODE=`sed -n -e "s/-name \(.*\)@.*/\1/p" ${FILE}`
+#sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
 ##
 ## build service wrapper
