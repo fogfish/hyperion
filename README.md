@@ -1,49 +1,31 @@
 # Erlang Node Builder
 
-The project defines builder script(s) to assemble Erlang/OTP node.
+The project is show case of Makefile build script (see https://github.com/fogfish/makefile) and it defines a template and builder script(s) to assemble Erlang/OTP node. Objectives are assemble self-contained tarball package, installable to remote nodes; enables environment with minimal memory footprint while providing all standard Erlang/OTP libraries. It also provides scripts to assemble docker images
 
-## Objectives
+## Build docker image
 
-* assemble self-contained tarball package, installable to remote nodes
-* enable environment with minimal memory footprint while providing all standard Erlang/OTP libraries. 
-* ensure node customization
-
-## Customize
-
-* add 3rd-party Erlang libraries via `rebar.config` and `deps.config`
-* manage node content and boot sequence via `reltool.config` 
-* overlay default configuration with `vars.config`
-* define application envrionment and system variables at `sys.config`
-
-## Build
-
-### Build standard node configuration
-
-produces `hyperion-${VSN}.${ARCH}-${PLAT}.tgz`
+The boot2docker (https://github.com/boot2docker/boot2docker) is required.
+Ready made image is available at https://hub.docker.com with identity fogfish/otp:R16B03-1
 
 ```
-	make
-	make rel
-``` 
+   cd rel/files/docker/R16B03-1
+   docker build -t fogfish/otp:R16B03-1 .
+```
 
-### Overlay node specific configuration
+The docker image is needed if _cross-platform_ build on Mac OS is required
 
-produces `mynode-${VSN}.${ARCH}-${PLAT}.tgz`
+## Build Hyperion node
 
 ```
    make
-   make node id=mynode.config
+   make pkg
+   make node pass=~/.ssh/id_rsa host=ec2-user@example.com
 ```
 
-## Deploy
+## Build Linux Hyperion node on Mac OS
 
 ```
-	scp hyperion-${VSN}.${ARCH}-${PLAT}.tgz myuser@mynode:
-	ssh myuser@mynode
-
-	cd /usr/local
-	sudo tar -xvf hyperion-${VSN}.${ARCH}-${PLAT}.tgz
-	/usr/local/hyperion/bin/hyperion {start|stop|attach}
+   make
+   make pkg PLAT=Linux
+   node node PLAT=Linux pass=~/.ssh/id_rsa host=ec2-user@example.com
 ```
-
-
