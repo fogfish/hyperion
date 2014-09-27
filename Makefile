@@ -22,7 +22,7 @@ TAG  = ${ARCH}.${PLAT}
 TEST?= priv/${APP}.benchmark
 S3   =
 GIT ?= https://github.com/fogfish
-VMI  = fogfish/otp:R16B03-1
+VMI  = fogfish/otp:17.3
 
 ## root path to benchmark framework
 BB     = ../basho_bench

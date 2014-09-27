@@ -7,6 +7,10 @@ FROM centos:centos6
 MAINTAINER Dmitry Kolesnikov <dmkolesnikov@gmail.com>
 
 ##
+##
+ENV VSN 17.3
+
+##
 ## install dependencies
 RUN \
    yum -y install \
@@ -23,15 +27,15 @@ RUN \
 ##
 ## download
 RUN cd /tmp && \
-   curl -O http://www.erlang.org/download/otp_src_R16B03-1.tar.gz
+   curl -O http://www.erlang.org/download/otp_src_${VSN}.tar.gz
 RUN cd /tmp && \
-   tar -zxvf otp_src_R16B03-1.tar.gz
+   tar -zxvf otp_src_${VSN}.tar.gz
 
 ##
 ## configure
-RUN cd /tmp/otp_src_R16B03-1 && \
+RUN cd /tmp/otp_src_${VSN} && \
    ./configure \
-      --prefix=/usr/local/otp_R16B03 \
+      --prefix=/usr/local/otp_${VSN} \
       --enable-threads \
       --enable-smp-support \
       --enable-kernel-poll \
@@ -43,13 +47,13 @@ RUN cd /tmp/otp_src_R16B03-1 && \
 
 ##
 ## build
-RUN cd /tmp/otp_src_R16B03-1 && \
+RUN cd /tmp/otp_src_${VSN} && \
    make && \
    make install && \
-   ln -s /usr/local/otp_R16B03 /usr/local/otp
+   ln -s /usr/local/otp_${VSN} /usr/local/otp
 
-RUN rm -Rf /tmp/otp_src_R16B03-1
-RUN rm -f  /tmp/otp_src_R16B03-1.tar.gz
+RUN rm -Rf /tmp/otp_src_${VSN}
+RUN rm -f  /tmp/otp_src_${VSN}.tar.gz
 
 ENV PATH $PATH:/usr/local/otp/bin
 
