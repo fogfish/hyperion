@@ -3,7 +3,7 @@
 ##
 ## @description
 ##   Erlang/OTP from scratch 
-FROM centos:centos6
+FROM centos
 MAINTAINER Dmitry Kolesnikov <dmkolesnikov@gmail.com>
 
 ##
