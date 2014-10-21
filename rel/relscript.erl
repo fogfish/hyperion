@@ -25,11 +25,16 @@ reltool(Config, File) ->
 		)
 	),
    {ok, RelCfg} = file:consult(File),
+   
+   %% copy libraries
    RootDir      = rebar_rel_utils:get_root_dir(RelCfg),
+   io:format("====> ~p~n", [RootDir]),
+
 	lists:foreach(
 		fun(X) -> ok = copy_lib(Release, RootDir, X) end,
 		proplists:get_value(lib, RelCfg, [])
-	).
+	),
+   copy_bin(Release, RootDir, erlc).
 
 %%
 copy_lib(Rel, RootDir, Lib) ->
@@ -47,3 +52,11 @@ copy_lib(Rel, RootDir, Lib) ->
 			os:cmd(lists:flatten(io_lib:format("cp -R ~s ~s", [Src, Dst]))),
 			ok
 	end.
+
+%%
+copy_bin(Rel, RootDir, Bin) ->
+   io:format("==> rel copy: ~p~n", [Bin]),
+   Src = filename:join([RootDir, "bin", Bin]),
+   Dst = filename:join([rebar_utils:get_cwd(), Rel, "bin", Bin]),
+   os:cmd(lists:flatten(io_lib:format("cp -R ~s ~s", [Src, Dst]))),
+   ok.
