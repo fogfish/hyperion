@@ -26,7 +26,7 @@ TAG  = ${HEAD}.${ARCH}.${PLAT}
 TEST?= priv/${APP}.benchmark
 S3   =
 GIT ?= https://github.com/fogfish
-VMI  = fogfish/otp:R16B03-1 
+VMI  = fogfish/otp:17.3 
 NET ?= lo0
 USER =
 PASS =
@@ -130,7 +130,7 @@ rel: ${TAR}
 ifeq (${PLAT},$(shell uname -s))
 ${TAR}: 
 	@./rebar generate ${RFLAGS}; \
-	cd rel ; tar -zcf ../${TAR} ${REL}${VARIANT}/; cd - ;\
+	cd rel ; tar -zcf ${TAR} ${REL}${VARIANT}/ ; mv ${TAR} ../${TAR} ; cd - ;\
 	echo "==> tarball: ${TAR}"
 
 else
@@ -169,6 +169,12 @@ s3: ${PKG}
 
 s3-latest: ${PKG}
 	aws s3 cp ${PKG} ${S3}/${APP}+latest${VARIANT}.bundle
+
+##
+## build docker image
+docker:
+	docker build -t fogfish/${APP}:${VSN} .
+
 endif
 
 #####################################################################
