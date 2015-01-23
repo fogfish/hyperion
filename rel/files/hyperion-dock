@@ -1,11 +1,10 @@
 #!/bin/bash
 
-ROOT=$(dirname $(dirname "$(readlink -f "$0")"))
-echo "==> ${ROOT}"
-
 ##
 ## config file
-FILE=${ROOT}/releases/${VSN}/vm.args
+FILE=${REL}/releases/${VSN}/vm.args
+echo "==> config ${FILE}"
+
 
 ##
 ## set HOST address
@@ -16,7 +15,7 @@ fi
 sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
 
-${ROOT}/bin/hyperion $1
+${ROOT}/bin/hyperion console
 
 while true ;
 do

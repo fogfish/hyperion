@@ -27,7 +27,7 @@ fi
 ## build docker wrapper
 if [ ! -a /etc/init.d/${APP}-dock ] ; 
 then
-echo -e "#!/bin/bash\nexport HOME=/root\n${PREFIX}/${APP}/bin/${APP}-dock" >  /etc/init.d/${APP}-dock
+echo -e "#!/bin/bash\nexport HOME=/root\nexport REL=${REL}\nexport VSN=${VSN}\n${PREFIX}/${APP}/bin/${APP}-dock \$1" >  /etc/init.d/${APP}-dock
 chmod ugo+x /etc/init.d/${APP}-dock
 fi
 
