@@ -21,5 +21,12 @@ echo -e "#!/bin/bash\nexport HOME=/root\n${PREFIX}/${APP}/bin/${APP} \$1" >  /et
 chmod ugo+x /etc/init.d/${APP}
 fi
 
+##
+## deploy config
+test ! -d /etc/hyperion && mkdir -p /etc/hyperion
+test ! -e /etc/hyperion/app.config && cp ${REL}/releases/${VSN}/sys.config /etc/hyperion/app.config
+test ! -e /etc/hyperion/inet.config && cp ${REL}/releases/${VSN}/inet.config /etc/hyperion/inet.config
+test ! -e /etc/hyperion/vm.args && cp ${REL}/releases/${VSN}/vm.args /etc/hyperion/vm.args
+
 set +u
 set +e

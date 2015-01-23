@@ -17,6 +17,9 @@
 -kernel inet_dist_listen_min 32100
 -kernel inet_dist_listen_max 32199
 
+## enable inet.config
+# -kernel inetrc '"/etc/hyperion/inet.config"'
+
 ## Increase number of concurrent ports/sockets
 ##-env ERL_MAX_PORTS 4096
 
@@ -25,3 +28,23 @@
 
 ## forces to add all libraries to code path
 -pa */ebin
+
+
+
+##
+## Embedded system micro-tunning
+
+## max number of processes impact on memory
+## +P 4096
+
+## suggested stack size in kilo words for threads
+## -a 16
+
+## set minimum heap size in words
+## -hms 128
+
+## set minimum binary virtual heap size in words
+## -hmbs 1024
+
+## set the distribution buffer busy limit in kilobytes
+## -zdbbl 16

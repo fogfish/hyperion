@@ -23,24 +23,41 @@ cd $RUNNER_BASE_DIR
 mkdir -p $RUNNER_LOG_DIR
 # Identify the script name
 SCRIPT=`basename $0`
+SYSDIR=/etc
 
 # Parse out release and erts info
 START_ERL=`cat $RUNNER_BASE_DIR/releases/start_erl.data`
 ERTS_VSN=${START_ERL% *}
 APP_VSN=${START_ERL#* }
 
-# Use releases/VSN/vm.args if it exists otherwise use etc/vm.args
-if [ -e "$RUNNER_BASE_DIR/releases/$APP_VSN/vm.args" ]; then
-    VMARGS_PATH="$RUNNER_BASE_DIR/releases/$APP_VSN/vm.args"
+# Lookup VM args
+#    /etc/APP/vm.args
+#    ROOT/releases/VSN/vm.args
+#    ROOT/etc/APP/vm.args
+if [ -e "$SYSDIR/$SCRIPT/vm.args" ] ;
+then
+   VMARGS_PATH="$SYSDIR/$SCRIPT/vm.args"
 else
-    VMARGS_PATH="$RUNNER_ETC_DIR/vm.args"
+   if [ -e "$RUNNER_BASE_DIR/releases/$APP_VSN/vm.args" ]; then
+      VMARGS_PATH="$RUNNER_BASE_DIR/releases/$APP_VSN/vm.args"
+   else
+      VMARGS_PATH="$RUNNER_ETC_DIR/vm.args"
+   fi
 fi
 
-# Use releases/VSN/sys.config if it exists otherwise use etc/app.config
-if [ -e "$RUNNER_BASE_DIR/releases/$APP_VSN/sys.config" ]; then
-    CONFIG_PATH="$RUNNER_BASE_DIR/releases/$APP_VSN/sys.config"
+# Lookup APP config
+#    /etc/APP/app.config
+#    ROOT/release/VSN/sys.config
+#    ROOT/etc/APP/app.config
+if [ -e "$SYSDIR/$SCRIPT/app.config" ] ;
+then
+   CONFIG_PATH="$SYSDIR/$SCRIPT/app.config"
 else
-    CONFIG_PATH="$RUNNER_ETC_DIR/app.config"
+   if [ -e "$RUNNER_BASE_DIR/releases/$APP_VSN/sys.config" ]; then
+      CONFIG_PATH="$RUNNER_BASE_DIR/releases/$APP_VSN/sys.config"
+   else
+      CONFIG_PATH="$RUNNER_ETC_DIR/app.config"
+   fi
 fi
 
 # Extract the target node name from node.args
