@@ -2,22 +2,26 @@
 
 ##
 ## config file
-FILE=${REL}/releases/${VSN}/vm.args
+FILE=/etc/hyperion/vm.args
 echo "==> config ${FILE}"
 
 
 ##
 ## set HOST address
-if [ -z "${HOST}" ] ;
-then
-HOST=$(ip addr show eth0 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
-fi
+test -z "${HOST}" && HOST=$(ip addr show eth1 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
 sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
+case $1 in
+   console)
+      ${REL}/bin/hyperion console
+      ;;
 
-${ROOT}/bin/hyperion console
+   *)
+      ${REL}/bin/hyperion $1
 
-while true ;
-do
-   sleep 3600
-done
+      while true ;
+      do
+         sleep 3600
+      done
+      ;;
+esac
