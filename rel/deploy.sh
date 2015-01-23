@@ -10,7 +10,6 @@ set -e
 ##
 ## changes node name
 FILE=${REL}/releases/${VSN}/vm.args
-# aws
 # HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
 # HOST=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 # NODE=`sed -n -e "s/-name \(.*\)@.*/\1/p" ${FILE}`
@@ -31,13 +30,11 @@ fi
 
 ##
 ## build docker wrapper
-if [ ! -a /etc/init.d/${APP}.docker ] ; 
+if [ ! -a /etc/init.d/${APP}-dock ] ; 
 then
-echo -e "#!/bin/bash\nexport HOME=/root\n${PREFIX}/${APP}/bin/${APP} \$1\nwhile true ;\ndo\nsleep3600\ndone\n" >  /etc/init.d/${APP}.docker
-chmod ugo+x /etc/init.d/${APP}.docker
+echo -e "#!/bin/bash\nexport HOME=/root\n${PREFIX}/${APP}/bin/${APP}-dock" >  /etc/init.d/${APP}-dock
+chmod ugo+x /etc/init.d/${APP}-dock
 fi
-
-
 
 
 ##

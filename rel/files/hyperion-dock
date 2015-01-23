@@ -1,0 +1,24 @@
+#!/bin/bash
+
+ROOT=$(dirname $(dirname "$(readlink -f "$0")"))
+echo "==> ${ROOT}"
+
+##
+## config file
+FILE=${ROOT}/releases/${VSN}/vm.args
+
+##
+## set HOST address
+if [ -z "${HOST}" ] ;
+then
+HOST=$(ip addr show eth0 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
+fi
+sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
+
+
+${ROOT}/bin/hyperion $1
+
+while true ;
+do
+   sleep 3600
+done
