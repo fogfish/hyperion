@@ -11,6 +11,13 @@ echo "==> config ${FILE}"
 test -z "${HOST}" && HOST=$(ip addr show eth1 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
 sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
+##
+## set NODE name
+if [ ! -z "${NODE}" ] ;
+then
+sed -i -e "s/-name \(.*\)@/-name ${NODE}@/g" ${FILE}
+fi
+
 case $1 in
    console)
       ${REL}/bin/hyperion console
