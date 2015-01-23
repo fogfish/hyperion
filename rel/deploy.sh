@@ -13,12 +13,7 @@ FILE=${REL}/releases/${VSN}/vm.args
 # HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
 # HOST=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 # NODE=`sed -n -e "s/-name \(.*\)@.*/\1/p" ${FILE}`
-# docker
-if [ -z "${HOST}" ] ;
-then
-HOST=$(ip addr show eth0 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
-fi
-sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
+# sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
 ##
 ## build service wrapper
