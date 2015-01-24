@@ -8,7 +8,15 @@ echo "==> config ${FILE}"
 
 ##
 ## set HOST address
-test -z "${HOST}" && HOST=$(ip addr show eth1 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
+if [ -z "${HOST}" ] ;
+then
+   HOST=$(ip addr show eth0 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')
+else
+   if [[ "${HOST:0:3}" == "eth" ]] ; 
+   then
+      HOST=$(ip addr show ${HOST} | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p')   
+   fi
+fi
 sed -i -e "s/@\(127.0.0.1\)/@${HOST}/g" ${FILE}
 
 ##
@@ -18,17 +26,16 @@ then
 sed -i -e "s/-name \(.*\)@/-name ${NODE}@/g" ${FILE}
 fi
 
-case $1 in
-   console)
-      ${REL}/bin/hyperion console
-      ;;
+##
+## run
+if [ -z "${DAEMON}" ] ;
+then
+   ${REL}/bin/hyperion console
+else
+   ${REL}/bin/hyperion start
 
-   *)
-      ${REL}/bin/hyperion $1
-
-      while true ;
-      do
-         sleep 3600
-      done
-      ;;
-esac
+   while true ;
+   do
+      sleep 3600
+   done
+fi
