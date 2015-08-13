@@ -8,7 +8,7 @@
 ##   application version schema (based on semantic version)
 ##   ${APP}-${VSN}+${GIT}.${ARCH}.${PLAT}
 ##
-## @version 0.7.0
+## @version 0.8.1
 .PHONY: test rel deps all pkg
 
 #####################################################################
@@ -23,10 +23,10 @@ ARCH?= $(shell uname -m)
 PLAT?= $(shell uname -s)
 HEAD?= $(shell git rev-parse --short HEAD)
 TAG  = ${HEAD}.${ARCH}.${PLAT}
-TEST?= priv/${APP}.benchmark
+TEST?= ${APP}
 S3   =
 GIT ?= https://github.com/fogfish
-VMI  = fogfish/otp:17.3 
+VMI  = fogfish/otp:17.3
 NET ?= lo0
 USER =
 PASS =
@@ -41,9 +41,9 @@ BRANCH = $(shell git symbolic-ref --short -q HEAD)
 EFLAGS = \
 	-name ${APP}@${ADDR} \
 	-setcookie nocookie \
-	-pa ./ebin \
-	-pa deps/*/ebin \
-	-pa apps/*/ebin \
+	-pa ${ROOT}/ebin \
+	-pa ${ROOT}/deps/*/ebin \
+	-pa ${ROOT}/apps/*/ebin \
 	-kernel inet_dist_listen_min 32100 \
 	-kernel inet_dist_listen_max 32199 \
 	+P 1000000 \
@@ -60,6 +60,7 @@ ifeq ($(wildcard rel/reltool.config),)
 	TAR =
 	PKG =
 else
+   IID  = $(shell cat rel/reltool.config | sed -n 's/{target_dir,.*\"\([^-]*\).*\"}./\1/p')
 	REL  = $(shell cat rel/reltool.config | sed -n 's/{target_dir,.*\"\(.*\)\"}./\1/p')
 	VSN  = $(shell echo ${REL} | sed -n 's/.*-\(.*\)/\1/p')
 ifeq (${VSN},)
@@ -73,11 +74,11 @@ else
 	RFLAGS  = target_dir=${REL}${VARIANT} overlay_vars=${ROOT}/${config}
 endif
 ifeq (${VSN},)
-	TAR = ${REL}${VARIANT}+${TAG}.tgz
-	PKG = ${REL}${VARIANT}+${TAG}.bundle
+	TAR = ${IID}${VARIANT}+${TAG}.tgz
+	PKG = ${IID}${VARIANT}+${TAG}.bundle
 else
-	TAR = ${REL}-${VSN}${VARIANT}+${TAG}.tgz
-	PKG = ${REL}-${VSN}${VARIANT}+${TAG}.bundle
+	TAR = ${IID}-${VSN}${VARIANT}+${TAG}.tgz
+	PKG = ${IID}-${VSN}${VARIANT}+${TAG}.bundle
 endif
 endif
 
@@ -111,8 +112,11 @@ clean:
 distclean: clean 
 	@./rebar delete-deps
 
-test: all
+unit: all
 	@./rebar skip_deps=true eunit
+
+test:
+	@erl ${EFLAGS} -run deb test test/${TEST}.config
 
 docs:
 	@./rebar skip_deps=true doc
@@ -139,7 +143,7 @@ ${TAR}:
 	@echo "==> docker run ${VMI}" ;\
 	K=`test ${PASS} && cat  ${PASS}` ;\
 	A=`test ${USER} && echo "mkdir -p /root/.ssh && echo \"$$K\" > /root/.ssh/id_rsa && chmod 0700 /root/.ssh/id_rsa && echo -e \"Host *\n\tUser ${USER}\n\tStrictHostKeyChecking no\n\" > /root/.ssh/config &&"` ;\
-	I=`docker run -d -t ${VMI} /bin/sh -c "$$A ${BUILDER}"` ;\
+	I=`docker run -d ${VMI} /bin/sh -c "$$A ${BUILDER}"` ;\
 	(docker attach $$I &) ;\
 	docker cp $$I:/tmp/${APP}/${TAR} . 1> /dev/null 2>&1 ;\
 	while [ $$? -ne 0 ] ;\
@@ -169,12 +173,6 @@ s3: ${PKG}
 
 s3-latest: ${PKG}
 	aws s3 cp ${PKG} ${S3}/${APP}+latest${VARIANT}.bundle
-
-##
-## build docker image
-docker:
-	docker build -t fogfish/${APP}:${VSN} .
-
 endif
 
 #####################################################################
@@ -210,7 +208,7 @@ run:
 
 benchmark:
 	@echo "==> benchmark: ${TEST}" ;\
-	$(BB)/basho_bench -N bb@127.0.0.1 -C nocookie ${TEST} ;\
+	$(BB)/basho_bench -N bb@127.0.0.1 -C nocookie priv/${TEST}.benchmark ;\
 	$(BB)/priv/summary.r -i tests/current ;\
 	open tests/current/summary.png
 
@@ -234,5 +232,5 @@ endif
 ##
 #####################################################################
 rebar:
-	@curl -L -O https://raw.githubusercontent.com/wiki/basho/rebar/rebar ; \
+	@curl -L -O https://github.com/rebar/rebar/wiki/rebar ; \
 	chmod ugo+x rebar

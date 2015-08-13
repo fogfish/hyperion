@@ -16,6 +16,7 @@ RUN \
    yum -y install \
       tar \
       gcc \
+      c++ \
       git \
       glibc-devel \
       make \
@@ -58,3 +59,9 @@ RUN rm -f  /tmp/otp_src_${VSN}.tar.gz
 ENV PATH $PATH:/usr/local/otp/bin
 
 EXPOSE 4369
+
+## todo: remove c++
+RUN \
+   yum -y install \
+      gcc-c++
+

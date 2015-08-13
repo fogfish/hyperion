@@ -16,7 +16,7 @@ RUN \
 
 ##
 ## install hyperion
-ADD hyperion-1+aaec6af.x86_64.Linux.bundle /tmp/hyperion-1+latest.bundle
+ADD hyperion-1+c330c51.x86_64.Linux.bundle /tmp/hyperion-1+latest.bundle
 
 RUN \
    sh /tmp/hyperion-1+latest.bundle && \
@@ -24,4 +24,14 @@ RUN \
 
 ENV PATH $PATH:/usr/local/hyperion/bin/
 
+##
+## fix 
+# RUN chmod ugo+x /usr/local/hyperion/bin/hyperion-dock
+ADD rel/files/hyperion-dock /usr/local/hyperion/bin/hyperion-dock
+
 EXPOSE 4369
+EXPOSE 32100
+
+CMD /etc/init.d/hyperion-dock
+
+
