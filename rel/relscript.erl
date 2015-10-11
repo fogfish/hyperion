@@ -27,7 +27,7 @@ reltool(Config, File) ->
    {ok, RelCfg} = file:consult(File),
    
    %% copy libraries
-   RootDir      = rebar_rel_utils:get_root_dir(RelCfg),
+   RootDir      = rebar_rel_utils:get_root_dir(Config, RelCfg),
    io:format("====> ~p~n", [RootDir]),
 
 	lists:foreach(

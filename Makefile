@@ -8,7 +8,7 @@
 ##   application version schema (based on semantic version)
 ##   ${APP}-${VSN}+${GIT}.${ARCH}.${PLAT}
 ##
-## @version 0.8.1
+## @version 0.8.7
 .PHONY: test rel deps all pkg
 
 #####################################################################
@@ -25,8 +25,8 @@ HEAD?= $(shell git rev-parse --short HEAD)
 TAG  = ${HEAD}.${ARCH}.${PLAT}
 TEST?= ${APP}
 S3   =
-GIT ?= https://github.com/fogfish
-VMI  = fogfish/otp:17.3
+GIT ?= https://github.com/fogfish/
+VMI ?= app/erlang:latest
 NET ?= lo0
 USER =
 PASS =
@@ -36,14 +36,17 @@ BB     = ../basho_bench
 SSHENV = /tmp/ssh-agent.conf
 ADDR   = $(shell ifconfig ${NET} | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
 BRANCH = $(shell git symbolic-ref --short -q HEAD)
+COOKIE?= nocookie
 
 ## erlang flags (make run only)
 EFLAGS = \
 	-name ${APP}@${ADDR} \
-	-setcookie nocookie \
+	-setcookie ${COOKIE} \
 	-pa ${ROOT}/ebin \
 	-pa ${ROOT}/deps/*/ebin \
 	-pa ${ROOT}/apps/*/ebin \
+	-pa ${ROOT}/rel/files \
+	-pa ${ROOT}/priv \
 	-kernel inet_dist_listen_min 32100 \
 	-kernel inet_dist_listen_max 32199 \
 	+P 1000000 \
@@ -132,10 +135,13 @@ rel: ${TAR}
 
 ## assemble VM release
 ifeq (${PLAT},$(shell uname -s))
-${TAR}: 
-	@./rebar generate ${RFLAGS}; \
-	cd rel ; tar -zcf ${TAR} ${REL}${VARIANT}/ ; mv ${TAR} ../${TAR} ; cd - ;\
-	echo "==> tarball: ${TAR}"
+${TAR}:
+	@./rebar generate ${RFLAGS} ;\
+	cd rel ;\
+	test -d ${REL}${VARIANT} && tar -zcf ${TAR} ${REL}${VARIANT}/ ;\
+	test -d ${REL}${VARIANT} && mv ${TAR} ../${TAR} ;\
+	cd - ;\
+	test -f ${TAR} && echo "==> tarball: ${TAR}"
 
 else
 ifneq (${VMI},)
@@ -164,6 +170,8 @@ pkg: rel/deploy.sh ${TAR}
 	printf  "${BUNDLE_FREE}" >> ${PKG} ; \
 	cat  ${TAR}              >> ${PKG} ; \
 	chmod ugo+x  ${PKG}                ; \
+	rm -f ${IID}-current.${ARCH}.${PLAT}.bundle ; \
+	ln -s ${PKG} ${IID}-current.${ARCH}.${PLAT}.bundle ; \
 	echo "==> bundle: ${PKG}"
 
 ## copy 'package' to s3
