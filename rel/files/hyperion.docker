@@ -27,4 +27,4 @@ fi
 
 ##
 ## run
-${REL}/bin/hyperion console
+/usr/local/hyperion/bin/hyperion console

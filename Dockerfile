@@ -19,7 +19,7 @@ RUN \
 
 ##
 ## install hyperion
-COPY hyperion-current.${ARCH}.${PLAT}.bundle.bundle /tmp/hyperion.bundle
+COPY hyperion-current.${ARCH}.${PLAT}.bundle /tmp/hyperion.bundle
 
 RUN \
    sh /tmp/hyperion.bundle && \
@@ -31,6 +31,6 @@ ENV PATH $PATH:/usr/local/hyperion/bin/
 EXPOSE 4369
 EXPOSE 32100
 
-CMD sh /usr/local/hyperion/hyperion.docker
+CMD sh /usr/local/hyperion/bin/hyperion.docker
 
 
