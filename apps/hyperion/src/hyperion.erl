@@ -17,3 +17,8 @@
 %% @description
 %%  
 -module(hyperion).
+
+-export([start/0]).
+
+start() ->
+   application:start(?MODULE).

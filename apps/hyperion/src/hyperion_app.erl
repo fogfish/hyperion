@@ -24,13 +24,14 @@
 start(_Type, _Args) -> 
    {ok, Sup} = hyperion_sup:start_link(),
    expand_code_path(),
+   boot_application(),
    {ok, Sup}.
 
 stop(_State) ->
    ok.
 
 %%
-%% expand relative code path
+%% expand relative code path to absolute one
 expand_code_path() ->
 	lists:foreach(fun expand_code_path/1, code:get_path()).
 
@@ -45,3 +46,66 @@ expand_code_path(Path) ->
 		_        ->
 			ok
 	end.
+
+%%
+%% external libdir
+libdir() ->
+   application:get_env(hyperion, libdir, "/tmp/hyperion").
+
+%%
+%%
+findlib(Path) ->
+   filelib:wildcard(filename:join([libdir(), Path])).
+
+%%
+%% boot external applications
+boot_application() ->
+   add_code_path([
+      "*/deps/*/ebin/*.app", 
+      "*/ebin/*.app"
+   ]),
+   lists:foreach(
+      fun(Path) ->
+         {ok, [{application, App, _}]} = file:consult(Path),
+         ok = ensure_loaded(App),
+         ok = ensure_started(App)
+      end,
+      findlib("*/ebin/*.app")
+   ).
+
+%%
+%% 
+add_code_path([H|List]) ->
+   lists:foreach(
+      fun(X) ->
+         code:add_patha(filename:dirname(X))
+      end,
+      findlib(H)
+   ),
+   add_code_path(List);
+
+add_code_path([]) ->
+   ok.
+
+%%
+%%   
+ensure_loaded(App) ->
+   case application:load(App) of
+      {error, {already_loaded, _}} -> 
+         ok;
+      Any ->
+         Any
+   end.
+
+%%
+%%
+ensure_started(App) ->
+   case application:ensure_all_started(App, permanent) of
+      {error, {already_started, _}} -> 
+         ok;
+      {ok, _} ->
+         ok;
+      Any ->
+         Any
+   end.
+

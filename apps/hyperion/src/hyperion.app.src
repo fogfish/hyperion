@@ -1,12 +1,8 @@
 {application, hyperion,
    [
-      {description, "Erlang node builder"},
-      {vsn,         "0.0.0"},
-      {modules,     [
-         hyperion,
-         hyperion_sup,
-         hyperion_app
-      ]},
+      {description, "Erlang node bootstrap"},
+      {vsn,         "0.4.0"},
+      {modules,     []},
       {registered,  []},
       {applications,[
          kernel
