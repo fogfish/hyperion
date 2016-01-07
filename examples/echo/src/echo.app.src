@@ -1,0 +1,15 @@
+{application, echo,
+   [
+      {description, "example application"},
+      {vsn,         "0.1.0"},
+      {modules,     []},
+      {registered,  []},
+      {applications,[
+         kernel
+        ,stdlib
+        ,knet
+      ]},
+      {mod, {echo_app, []}},
+      {env, []}
+   ]
+}.
