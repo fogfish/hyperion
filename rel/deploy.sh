@@ -7,9 +7,17 @@
 set -u
 set -e
 
+
+##
+## discover version of erlang release
+VERSION=`cat ${REL}/releases/start_erl.data`
+SYS_VSN=${VERSION% *}
+APP_VSN=${VESRION#* }
+
+
 ##
 ## changes node name
-FILE=${REL}/releases/${VSN}/vm.args
+FILE=${REL}/releases/${APP_VSN}/vm.args
 
 ## discover public host name on aws
 # HOST=`curl http://169.254.169.254/latest/meta-data/public-hostname`
