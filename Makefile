@@ -4,7 +4,7 @@
 ## @description
 ##   Makefile to build and release Erlang applications using standard development tools
 ##
-## @version 0.10.1
+## @version 0.10.3
 
 #####################################################################
 ##
@@ -46,7 +46,7 @@ EFLAGS = \
 	+K true +A 160 -sbt ts
 
 ## self-extracting bundle wrapper
-BUNDLE_INIT = PREFIX=${PREFIX}\nREL=${PREFIX}/${REL}\nAPP=${APP}\nVSN=${VSN}\nLINE=\`grep -a -n 'BUNDLE:\x24' \x240\`\ntail -n +\x24(( \x24{LINE\x25\x25:*} + 1)) \x240 | gzip -vdc - | tar -C ${PREFIX} -xvf - > /dev/null\n
+BUNDLE_INIT = PREFIX=${PREFIX}\nREL=${PREFIX}/${REL}\nAPP=${APP}\nVSN=${VSN}\nLINE=`grep -a -n "BUNDLE:$$" $$0`\ntail -n +$$(( $${LINE%%%%:*} + 1)) $$0 | gzip -vdc - | tar -C ${PREFIX} -xvf - > /dev/null\n
 BUNDLE_FREE = exit\nBUNDLE:\n
 BUILDER = FROM ${VMI}\nRUN mkdir ${APP}\nCOPY . ${APP}/\nRUN cd ${APP} && make && make rel\n
 CTRUN   = \
@@ -108,16 +108,6 @@ test.erl:
 docs:
 	@./rebar skip_deps=true doc
 
-##
-## build docker image
-docker: rel/files/Dockerfile
-	docker build \
-		--build-arg APP=${APP} \
-		--build-arg VSN=${VSN} \
-		-t ${IID}/${APP}:${VSN} -f $< .
-	docker tag -f ${IID}/${APP}:${VSN} ${IID}/${APP}:latest
-
-
 #####################################################################
 ##
 ## release 
@@ -145,6 +135,15 @@ ${PKG}.tgz: .git/dockermake
 	@echo "${BUILDER}" > $@
 endif
 
+## build docker image
+docker: rel/files/Dockerfile
+	docker build \
+		--build-arg APP=${APP} \
+		--build-arg VSN=${VSN} \
+		-t ${IID}/${APP}:${VSN} -f $< .
+	docker tag -f ${IID}/${APP}:${VSN} ${IID}/${APP}:latest
+
+
 
 #####################################################################
 ##
@@ -154,9 +153,9 @@ endif
 pkg: ${PKG}.tgz ${PKG}.bundle
 
 ${PKG}.bundle: rel/deploy.sh
-	@printf "${BUNDLE_INIT}" > $@ ;\
+	@printf '${BUNDLE_INIT}' > $@ ;\
 	cat $<  >> $@ ;\
-	printf  "${BUNDLE_FREE}" >> $@ ;\
+	printf  '${BUNDLE_FREE}' >> $@ ;\
 	cat  ${PKG}.tgz >> $@ ;\
 	chmod ugo+x $@ ;\
 	echo "==> bundle: $@"
