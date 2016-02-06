@@ -12,7 +12,7 @@ set -e
 ## discover version of erlang release
 VERSION=`cat ${REL}/releases/start_erl.data`
 SYS_VSN=${VERSION% *}
-APP_VSN=${VESRION#* }
+APP_VSN=${VERSION#* }
 
 
 ##
