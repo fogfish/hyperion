@@ -6,6 +6,8 @@
 *.tar.gz
 *.tgz
 *.bundle
+*.lock
+relx.config
 deps.config
 ebin/
 rebar3
