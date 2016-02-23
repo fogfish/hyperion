@@ -9,7 +9,7 @@ set -e
 
 
 ##
-## discover version of erlang release
+## discover version of Erlang release
 VERSION=`cat ${REL}/releases/start_erl.data`
 SYS_VSN=${VERSION% *}
 APP_VSN=${VERSION#* }
@@ -36,10 +36,6 @@ then
 echo -e "#!/bin/bash\nexport HOME=/root\n${REL}/bin/${APP} \$1" >  /etc/init.d/${APP}
 chmod ugo+x /etc/init.d/${APP}
 fi
-
-##
-## deploy global config
-test ! -d /etc/hyperion && mkdir -p /etc/hyperion
 
 set +u
 set +e

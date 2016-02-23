@@ -1,8 +1,9 @@
+##
 ## Name of the node
--name {{node}}@{{host}}
+-name hyperion@127.0.0.1
 
 ## Cookie for distributed erlang
--setcookie {{cookie}}
+-setcookie nocookie
 
 ## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
 ## (Disabled by default..use with caution!)
@@ -11,8 +12,12 @@
 ## Enable kernel poll and a few async threads
 +K true
 +A 160
-+P 10000000
 
+##
+## limit number of processes (keep small for embedded systems)
+## +P 10000000
+
+## vm config for high throughput
 -sbt true
 -sws very_eager
 -swt high

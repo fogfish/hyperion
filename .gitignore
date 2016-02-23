@@ -3,14 +3,11 @@
 *.aux
 *.beam
 *.dump
-*.tag.gz
+*.tar.gz
 *.tgz
 *.bundle
 deps.config
 ebin/
-deps/
-rel/hyperion*
-.eunit/
-rebar
-.rebar/
+rebar3
+_build/
 *.sublime-*
