@@ -1,0 +1,9 @@
+##
+## mock backing services
+version: '3'
+
+services:
+  vm:
+    build: ./vm
+    ports:
+     - "32199:32199"

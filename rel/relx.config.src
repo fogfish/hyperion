@@ -42,7 +42,6 @@
    % erts,
    et,
    eunit,
-   gs,
    hipe,
    % ic,
    inets,
@@ -56,7 +55,6 @@
    % ose,
    % otp_mibs,
    parsetools,
-   percept,
    public_key,
    reltool,
    runtime_tools,
@@ -66,10 +64,7 @@
    ssl,
    % stdlib,
    syntax_tools,
-   test_server,
    tools,
-   typer,
-   webtool,
    % wx,
    xmerl
 ]}.

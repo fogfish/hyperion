@@ -1,36 +1,37 @@
-## @author     Dmitry Kolesnikov, <dmkolesnikov@gmail.com>
-## @copyright  (c) 2014 Dmitry Kolesnikov. All Rights Reserved
 ##
-## @description
-##   Erlang/OTP from scratch 
+## Copyright (C) 2012 Dmitry Kolesnikov
+##
+## This Dockerfile may be modified and distributed under the terms
+## of the MIT license.  See the LICENSE file for details.
+## https://github.com/fogfish/makefile
+##
+## @doc
+##   This dockerfile is a reference container for Erlang releases
+##
+## @version 1.0.0
 FROM centos
-MAINTAINER Dmitry Kolesnikov <dmkolesnikov@gmail.com>
-
-ENV   ARCH  x86_64
-ENV   PLAT  Linux
 
 ##
 ## install dependencies
-RUN \
-   yum -y install \
+RUN set -e \
+   && yum -y update  \
+   && yum -y install \
       tar  \
-      git  \
-      make
+      unzip
+
+ENV   ARCH  x86_64
+ENV   PLAT  Linux
+ARG   APP=
+ARG   VSN=
 
 ##
-## install hyperion
-COPY hyperion-current.${ARCH}.${PLAT}.bundle /tmp/hyperion.bundle
+## install application
+COPY ${APP}-${VSN}+${ARCH}.${PLAT}.bundle /tmp/${APP}.bundle
+RUN set -e \
+   && sh /tmp/${APP}.bundle \
+   && rm /tmp/${APP}.bundle 
 
-RUN \
-   sh /tmp/hyperion.bundle && \
-   rm /tmp/hyperion.bundle 
-
-ENV PATH $PATH:/usr/local/hyperion/bin/
-
-
-EXPOSE 4369
-EXPOSE 32100
-
-CMD sh /usr/local/hyperion/bin/hyperion.docker
+ENV PATH $PATH:/usr/local/${APP}/bin/
 
 
+ENTRYPOINT /etc/init.d/application foreground
