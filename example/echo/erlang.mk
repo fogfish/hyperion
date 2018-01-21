@@ -8,8 +8,12 @@
 ## @doc
 ##   This makefile is the wrapper of rebar to build and ship erlang software
 ##
-## @version 1.0.1
+## @version 1.0.4
 .PHONY: all compile test unit clean distclean run console mock-up mock-rm benchmark release dist
+
+APP := $(strip $(APP))
+ORG := $(strip $(ORG))
+URI := $(strip $(URI))
 
 ##
 ## config
@@ -23,7 +27,7 @@ REL     = ${APP}-${VSN}
 PKG     = ${REL}+${ARCH}.${PLAT}
 TEST   ?= tests
 COOKIE ?= nocookie
-DOCKER ?= fogfish/erlang-alpine:20.2
+DOCKER ?= fogfish/erlang
 IID     = ${URI}${ORG}/${APP}
 
 ## required tools
@@ -40,6 +44,7 @@ EFLAGS = \
 	-name ${APP}@${ADDR} \
 	-setcookie ${COOKIE} \
 	-pa ${ROOT}/_build/default/lib/*/ebin \
+	-pa ${ROOT}/_build/default/lib/*/priv \
 	-pa ${ROOT}/rel \
 	-kernel inet_dist_listen_min 32100 \
 	-kernel inet_dist_listen_max 32199 \
@@ -116,8 +121,9 @@ clean: testclean dockerclean
 	@rm -f  *.tar.gz
 	@rm -f  *.bundle
 
-distclean: clean mock-rm node-rm
-	-@./rebar3 unlock
+distclean: clean
+	-@make mock-rm
+	-@make dist-rm
 	-@rm -Rf _build
 	-@rm rebar3
 
@@ -138,10 +144,10 @@ mock-up: test/mock/docker-compose.yml
 mock-rm: test/mock/docker-compose.yml
 	-@docker-compose -f $< down --rmi all -v --remove-orphans
 
-node-up: docker-compose.yml _build/spawner
+dist-up: docker-compose.yml _build/spawner
 	@docker-compose -f $< up
 
-node-rm: docker-compose.yml
+dist-rm: docker-compose.yml
 	-@rm -f _build/spawner
 	-@docker-compose -f $< down --rmi all -v --remove-orphans	
 

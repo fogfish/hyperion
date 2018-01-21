@@ -5,6 +5,21 @@
 > - Dan Simmons
 >
 
+**Hyperion** is a docker container to *build*, *ship* and *run* Erlang applications. 
+
+
+## Key features
+
+Hyperion contains complete Erlang VM and bootstrap code to spawn all required applications. It is only compatible with applications builds with `rebar3`.
+
+ 
+
+
+
+
+
+
+
 The application shows the [Erlang workflow](https://github.com/fogfish/makefile) in actions.
 
 

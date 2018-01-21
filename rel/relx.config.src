@@ -1,6 +1,6 @@
 %%
 %% include vm and extended bootstrap to release
-{include_erts,          true}.
+{include_erts,          false}.
 {extended_start_script, true}.
 
 %%
@@ -16,55 +16,53 @@
 %%
 %% release content definition
 {release, [
-   hyperion,
-
-   %%   
-   %% list of system applications
-
-   asn1,
-   common_test,
-   compiler,
-   % cosEvent,
-   % cosEventDomain,
-   % cosFileTransfer,
-   % cosNotification,
-   % cosProperty,
-   % cosTime,
-   % cosTransactions,
-   crypto,
-   debugger,
-   dialyzer,
-   % diameter,
-   % edoc,
-   % eldap,
-   % erl_docgen,
-   erl_interface,
-   % erts,
-   et,
-   eunit,
-   hipe,
-   % ic,
-   inets,
-   % jinterface,
-   % kernel,
-   % megaco,
-   mnesia,
-   % observer,
-   % orber,
-   os_mon,
-   % ose,
-   % otp_mibs,
-   parsetools,
-   public_key,
-   reltool,
-   runtime_tools,
-   sasl,
-   % snmp,
-   ssh,
-   ssl,
-   % stdlib,
-   syntax_tools,
-   tools,
-   % wx,
-   xmerl
+   hyperion
+   % %%   
+   % %% list of system applications
+   % asn1,
+   % common_test,
+   % compiler,
+   % % cosEvent,
+   % % cosEventDomain,
+   % % cosFileTransfer,
+   % % cosNotification,
+   % % cosProperty,
+   % % cosTime,
+   % % cosTransactions,
+   % crypto,
+   % debugger,
+   % dialyzer,
+   % % diameter,
+   % % edoc,
+   % % eldap,
+   % % erl_docgen,
+   % erl_interface,
+   % % erts,
+   % et,
+   % eunit,
+   % hipe,
+   % % ic,
+   % inets,
+   % % jinterface,
+   % % kernel,
+   % % megaco,
+   % mnesia,
+   % % observer,
+   % % orber,
+   % os_mon,
+   % % ose,
+   % % otp_mibs,
+   % parsetools,
+   % public_key,
+   % reltool,
+   % runtime_tools,
+   % sasl,
+   % % snmp,
+   % ssh,
+   % ssl,
+   % % stdlib,
+   % syntax_tools,
+   % tools,
+   % % wx,
+   % xmerl
 ]}.

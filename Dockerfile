@@ -5,20 +5,11 @@
 ## of the MIT license.  See the LICENSE file for details.
 ## https://github.com/fogfish/makefile
 ##
-## @doc
-##   This dockerfile is a reference container for Erlang releases
-##
-## @version 1.0.0
-FROM centos
+## 
+FROM fogfish/erlang-alpine-rt:20.2
 
 ##
-## install dependencies
-RUN set -e \
-   && yum -y update  \
-   && yum -y install \
-      tar  \
-      unzip
-
+##
 ENV   ARCH  x86_64
 ENV   PLAT  Linux
 ARG   APP=

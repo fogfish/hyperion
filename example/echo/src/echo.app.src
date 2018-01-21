@@ -1,0 +1,16 @@
+{application, echo,
+   [
+      {description, "example http service"},
+      {vsn,         "0.0.0"},
+      {modules,     []},
+      {registered,  []},
+      {applications,[
+         kernel, 
+         stdlib,
+         lager,
+         restd
+      ]},
+      {mod, {echo_app, []}},
+      {env, []}
+   ]
+}.  
