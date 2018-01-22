@@ -40,7 +40,7 @@ export HOME=/root
 export CODE_LOADING_MODE=interactive
 
 FILE=${REL}/releases/${APP_VSN}/vm.args
-HOST=\$(curl -s --connect-timeout 1 http://169.254.169.254/latest/meta-data/local-ipv4)
+HOST=\$(wget -qO- -T 1 http://169.254.169.254/latest/meta-data/local-ipv4)
 if [ -z "\${HOST}" ] ;
 then
 HOST=\$({ ip addr show eth0 | sed -n 's/.*inet \([0-9]*.[0-9]*.[0-9]*.[0-9]*\).*/\1/p' ; } || echo "127.0.0.1")
@@ -48,6 +48,7 @@ fi
 
 NODE=\$(sed -n -e "s/-name \(.*\)@.*/\1/p" \${FILE})
 sed -i -e "s/@\(127.0.0.1\)/@\${HOST}/g" \${FILE}
+
 
 ${PREFIX}/${APP}/bin/${APP} \$1
 EOF
