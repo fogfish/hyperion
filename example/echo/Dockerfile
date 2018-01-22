@@ -1,14 +1,6 @@
 FROM fogfish/hyperion
 
-##
-## config build
-ARG VSN=
-
-##
-## deploy application (with source code)
-COPY . /usr/local/share/hyperion/
+COPY _build /usr/local/share/hyperion/_build
 COPY app.config /etc/hyperion/app.config
 
-##
-##
 EXPOSE 8888

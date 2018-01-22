@@ -7,7 +7,7 @@
 ##   URI - identity of the docker repository with last /  
 
 APP = echo 
-ORG = 
+ORG = fogfish
 URI = 
 
 include erlang.mk
