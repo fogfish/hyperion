@@ -6,23 +6,9 @@
 ## https://github.com/fogfish/makefile
 ##
 ## 
-FROM fogfish/erlang-alpine-rt:20.2
+FROM fogfish/erlang-alpine-rt:20.3
 
-##
-##
-ENV   ARCH  x86_64
-ENV   PLAT  Linux
-ARG   APP=
-ARG   VSN=
+COPY _build/default/rel /rel
+COPY rel/app.config /etc/hyperion/app.config
 
-##
-## install application
-COPY ${APP}-${VSN}+${ARCH}.${PLAT}.bundle /tmp/${APP}.bundle
-RUN set -e \
-   && sh /tmp/${APP}.bundle \
-   && rm /tmp/${APP}.bundle 
-
-ENV PATH $PATH:/usr/local/${APP}/bin/
-
-
-ENTRYPOINT /etc/init.d/application foreground
+ENTRYPOINT spawn-erlang-node hyperion

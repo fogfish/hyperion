@@ -27,9 +27,9 @@ start(_Type, _Args) ->
       "/usr/local/otp/lib/erlang/lib/*/ebin/*.app"
    ]),
    ok = expand_code_path(),
-   {ok, App} = appname(),
-   {ok,   _} = application:ensure_all_started(App, permanent),
+   ok = start_app(appname()),
    hyperion_sup:start_link().
+
 
 stop(_State) ->
    ok.
@@ -75,10 +75,20 @@ libdir() ->
 %%
 %%
 appname() ->
-   application:get_env(hyperion, boot).
+   erlang:list_to_atom(os:getenv("SPAWN", "undefined")).
 
 %%
 %%
 findlib(Path) ->
    filelib:wildcard(filename:join([libdir(), Path])).
+
+%%
+%%
+start_app(undefined) ->
+   error_logger:warning_report([{application, undefined}]),
+   ok;
+start_app(AppName) ->
+   error_logger:info_report([{application, AppName}]),
+   {ok, _} = application:ensure_all_started(AppName, permanent),
+   ok.
 

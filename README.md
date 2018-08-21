@@ -26,32 +26,38 @@ The raise of containers, server-less technologies and lambda functions requires 
 The easiest way to start with Hyperion, is the Docker container. The latest version of the library is available at its master `branch` and it is available at DockerHub as runnable binary `fogfish/hyperion`. Please note that Docker installation is required to procedure. 
 
 
-Copy `_build` of your application into Docker container, append `app.config`. 
-Congratulations, your application is ready for deployment. 
+Copy `_build` of your application into Docker container, set application name to spawn and optionally append `app.config`. Congratulations, your application is ready for deployment. 
 
-```
+```Dockerfile
 FROM fogfish/hyperion
 
+ENV SPAWN myapp
 COPY _build /usr/local/share/hyperion/_build
+
+## optionally add application config
 COPY app.config /etc/hyperion/app.config
 ```
 
-The application requires a configuration `app.config` similar to `sys.config` in relx. This configuration file gives a hint to bootstrap code what application to boot. Additionally, you can include configuration options for other applications.
+The application might include a configuration `app.config` similar to `sys.config` in relx. You can include here configuration options for you and other applications if needed.
 
 ```
 [
-{hyperion, [{boot, myapp}]}
+{myapp, [
+   {myconfig, 1}
+]}
 ].
 
 ```
 
 
-Use [Erlang Workflow](https://github.com/fogfish/makefile) to package Erlang application with few shell commands
+See the [example application](example/echo) for live example. Use [Erlang Workflow](https://github.com/fogfish/makefile) to package Erlang application with few shell commands
 
-```
+```bash
 make 
 make docker
+docker run -p 8888:8888 fogfish/echo
 ```
+
  
 
 ## How To Contribute
